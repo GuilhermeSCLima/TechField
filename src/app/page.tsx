@@ -1,103 +1,279 @@
-import Image from "next/image";
+"use client";
+import { useState, useEffect } from "react";
+
+type Etapa = "inicio" | "provisionamento" | "reparo" | "resultado";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [etapa, setEtapa] = useState<Etapa>("inicio");
+  const [perguntaIndex, setPerguntaIndex] = useState(0);
+  const [inputValue, setInputValue] = useState("");
+  const [etapaAnterior, setEtapaAnterior] = useState<Etapa>("inicio");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+  const [respostasProvisionamento, setRespostasProvisionamento] = useState({
+    equipamento: "",
+    produto: "",
+    serial: "",
+    designador: "",
+    ostbs: "",
+    cvlan: "",
+  });
+
+  const [respostasReparo, setRespostasReparo] = useState({
+    os: "",
+    tecnico: "",
+    armario: "",
+    cliente: "",
+    testes: "",
+    causa: "",
+    endereco: "",
+    acao: "",
+    validacao_nome: "",
+    validacao_telefone: "",
+    proxima: "Em análise, retornarei em breve.",
+  });
+
+  useEffect(() => {
+    const tecnicoSalvo = localStorage.getItem("tecnico");
+    if (tecnicoSalvo) {
+      setRespostasReparo((prev) => ({ ...prev, tecnico: tecnicoSalvo }));
+      if (etapa === "reparo" && perguntaIndex === 1) {
+        setInputValue(tecnicoSalvo);
+      }
+    }
+  }, [etapa, perguntaIndex]);
+
+  const perguntasProvisionamento = [
+    { chave: "equipamento", texto: "Qual o equipamento? (ex: ONT)" },
+    { chave: "produto", texto: "Qual o serviço?" },
+    { chave: "serial", texto: "Serial GPON?" },
+    { chave: "designador", texto: "Designador?" },
+    { chave: "ostbs", texto: "OS TBS?" },
+    { chave: "cvlan", texto: "C-VLAN?" },
+  ];
+
+  const perguntasReparo = [
+    { chave: "os", texto: "BD / OS?" },
+    { chave: "tecnico", texto: "Nome do técnico?" },
+    { chave: "armario", texto: "Armário / GPON? (opcional)" },
+    { chave: "cliente", texto: "Nome do cliente/Empresa?" },
+    { chave: "testes", texto: "Testes realizados?" },
+    { chave: "causa", texto: "Causa raiz (defeito)?" },
+    { chave: "endereco", texto: "Endereço do cliente?" },
+    { chave: "acao", texto: "Ação tomada?" },
+    { chave: "validacao_nome", texto: "Nome de quem acompanhou o serviço?" },
+    { chave: "validacao_telefone", texto: "Telefone da pessoa?" },
+  ];
+
+  const handleResposta = (valor: string) => {
+    const trimmed = valor.trim();
+    setInputValue("");
+
+    if (etapa === "provisionamento") {
+      const chave = perguntasProvisionamento[perguntaIndex]
+        .chave as keyof typeof respostasProvisionamento;
+      setRespostasProvisionamento((prev) => ({ ...prev, [chave]: trimmed }));
+      if (perguntaIndex + 1 < perguntasProvisionamento.length) {
+        setPerguntaIndex(perguntaIndex + 1);
+      } else {
+        setEtapaAnterior("provisionamento");
+        setEtapa("resultado");
+      }
+    }
+
+    if (etapa === "reparo") {
+      const chave = perguntasReparo[perguntaIndex]
+        .chave as keyof typeof respostasReparo;
+
+      if (chave === "tecnico" && trimmed) {
+        localStorage.setItem("tecnico", trimmed);
+      }
+
+      setRespostasReparo((prev) => ({ ...prev, [chave]: trimmed }));
+      if (perguntaIndex + 1 < perguntasReparo.length) {
+        setPerguntaIndex(perguntaIndex + 1);
+      } else {
+        setEtapaAnterior("reparo");
+        setEtapa("resultado");
+      }
+    }
+  };
+
+  const resetar = () => {
+    setEtapa("inicio");
+    setEtapaAnterior("inicio");
+    setPerguntaIndex(0);
+    setInputValue("");
+    setRespostasProvisionamento({
+      equipamento: "",
+      produto: "",
+      serial: "",
+      designador: "",
+      ostbs: "",
+      cvlan: "",
+    });
+    setRespostasReparo({
+      os: "",
+      tecnico: localStorage.getItem("tecnico") || "",
+      armario: "",
+      cliente: "",
+      testes: "",
+      causa: "",
+      endereco: "",
+      acao: "",
+      validacao_nome: "",
+      validacao_telefone: "",
+      proxima: "Em análise, retornarei em breve.",
+    });
+  };
+
+  const perguntasAtuais =
+    etapa === "provisionamento"
+      ? perguntasProvisionamento
+      : etapa === "reparo"
+      ? perguntasReparo
+      : [];
+
+  async function copiarTexto(texto: string) {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(texto);
+        alert("Carimbo copiado para a área de transferência!");
+      } else {
+        // Fallback para browsers que não suportam clipboard API
+        const textarea = document.createElement("textarea");
+        textarea.value = texto;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+        alert("Carimbo copiado para a área de transferência!");
+      }
+    } catch {
+      alert("Não foi possível copiar o carimbo. Tente novamente.");
+    }
+  }
+
+  return (
+    <main className="min-h-screen bg-slate-900 text-white flex items-center justify-center p-6">
+      <div className="w-full max-w-xl bg-slate-800 rounded-xl p-6 shadow-lg space-y-4">
+        {etapa === "inicio" && (
+          <>
+            <p className="text-lg">👋 Olá! Escolha o tipo de carimbo:</p>
+            <div className="flex gap-4">
+              <button
+                onClick={() => setEtapa("provisionamento")}
+                className="bg-blue-600 px-4 py-2 rounded"
+              >
+                Provisionamento
+              </button>
+              <button
+                onClick={() => setEtapa("reparo")}
+                className="bg-yellow-600 px-4 py-2 rounded"
+              >
+                Reparo
+              </button>
+            </div>
+          </>
+        )}
+
+        {(etapa === "provisionamento" || etapa === "reparo") &&
+          perguntaIndex < perguntasAtuais.length && (
+            <>
+              <p className="text-lg">{perguntasAtuais[perguntaIndex].texto}</p>
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleResposta(inputValue);
+                  }
+                }}
+                className="w-full p-2 rounded bg-slate-700 border border-slate-600"
+                autoFocus
+              />
+              <p className="text-sm text-slate-400">
+                Pressione Enter para continuar
+              </p>
+            </>
+          )}
+
+        {etapa === "resultado" && (
+          <>
+            <p className="text-lg font-semibold">✅ Carimbo gerado:</p>
+            <pre className="bg-slate-900 p-4 rounded whitespace-pre-wrap text-green-400 text-sm leading-relaxed">
+              {etapaAnterior === "provisionamento"
+                ? `*PROVISÓRIO:* ${respostasProvisionamento.equipamento}
+*PRODUTO:* ${respostasProvisionamento.produto}
+*SERIAL GPON:* ${respostasProvisionamento.serial}
+*DESIGNADOR:* ${respostasProvisionamento.designador}
+*OSTBS:* ${respostasProvisionamento.ostbs}
+*C-VLAN:* ${respostasProvisionamento.cvlan}`
+                : `⚠ Atualização Atividades B2B ⚠
+
+*BD: ${respostasReparo.os}
+
+*TÉCNICO: ${respostasReparo.tecnico}
+*ARD: ${respostasReparo.armario || ""}
+*CLIENTE: ${respostasReparo.cliente}
+*TESTE: ${respostasReparo.testes}
+*CAUSA RAIZ: ${respostasReparo.causa}
+*ENDEREÇO: ${respostasReparo.endereco}
+*AÇÃO: ${respostasReparo.acao}
+
+*Validação no Local:
+${respostasReparo.validacao_nome}
+${respostasReparo.validacao_telefone}
+
+*Próxima Atualização:`}
+            </pre>
+
+            <div className="flex gap-4 mt-4 flex-wrap">
+              <button
+                onClick={() => {
+                  const texto =
+                    etapaAnterior === "provisionamento"
+                      ? `*PROVISÓRIO:* ${respostasProvisionamento.equipamento}
+*PRODUTO:* ${respostasProvisionamento.produto}
+*SERIAL GPON:* ${respostasProvisionamento.serial}
+*DESIGNADOR:* ${respostasProvisionamento.designador}
+*OSTBS:* ${respostasProvisionamento.ostbs}
+*C-VLAN:* ${respostasProvisionamento.cvlan}`
+                      : `⚠ Atualização Atividades B2B ⚠
+
+*BD: ${respostasReparo.os}
+
+*TÉCNICO: ${respostasReparo.tecnico}
+*ARD: ${respostasReparo.armario || ""}
+*CLIENTE: ${respostasReparo.cliente}
+*TESTE: ${respostasReparo.testes}
+*CAUSA RAIZ: ${respostasReparo.causa}
+*ENDEREÇO: ${respostasReparo.endereco}
+*AÇÃO: ${respostasReparo.acao}
+
+*Validação no Local:
+${respostasReparo.validacao_nome}
+${respostasReparo.validacao_telefone}
+
+*Próxima Atualização: ${respostasReparo.proxima}`;
+
+                  copiarTexto(texto);
+                }}
+                className="bg-green-600 px-4 py-2 rounded"
+              >
+                Copiar carimbo
+              </button>
+              <button
+                onClick={resetar}
+                className="bg-slate-700 px-4 py-2 rounded"
+              >
+                Novo carimbo
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </main>
   );
 }
+
