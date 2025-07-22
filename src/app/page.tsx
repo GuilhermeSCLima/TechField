@@ -23,6 +23,8 @@ export default function Home() {
     tecnico: "",
     armario: "",
     cliente: "",
+    posicao: "",
+    designador: "",
     testes: "",
     causa: "",
     endereco: "",
@@ -34,11 +36,9 @@ export default function Home() {
 
   useEffect(() => {
     const tecnicoSalvo = localStorage.getItem("tecnico");
-    if (tecnicoSalvo) {
+    if (tecnicoSalvo && etapa === "reparo" && perguntaIndex === 0) {
       setRespostasReparo((prev) => ({ ...prev, tecnico: tecnicoSalvo }));
-      if (etapa === "reparo" && perguntaIndex === 1) {
-        setInputValue(tecnicoSalvo);
-      }
+      setInputValue(tecnicoSalvo);
     }
   }, [etapa, perguntaIndex]);
 
@@ -52,28 +52,34 @@ export default function Home() {
   ];
 
   const perguntasReparo = [
-    { chave: "os", texto: "BD / OS?" },
     { chave: "tecnico", texto: "Nome do técnico?" },
-    { chave: "armario", texto: "Armário / GPON? (opcional)" },
+    { chave: "os", texto: "Nº BD?" },
     { chave: "cliente", texto: "Nome do cliente/Empresa?" },
+    { chave: "armario", texto: "Armário / GPON? (opcional)" },
+    { chave: "posicao", texto: "Posição? (opcional)" },
+    { chave: "designador", texto: "OSTBS / TA / Designador?" },
     { chave: "testes", texto: "Testes realizados?" },
     { chave: "causa", texto: "Causa raiz (defeito)?" },
     { chave: "endereco", texto: "Endereço do cliente?" },
     { chave: "acao", texto: "Ação tomada?" },
     { chave: "validacao_nome", texto: "Nome de quem acompanhou o serviço?" },
-    { chave: "validacao_telefone", texto: "Telefone da pessoa?" },
+    {
+      chave: "validacao_telefone",
+      texto: "Telefone de quem acompanhou o serviço?",
+    },
   ];
 
   const handleResposta = (valor: string) => {
     const trimmed = valor.trim();
-    setInputValue("");
 
     if (etapa === "provisionamento") {
       const chave = perguntasProvisionamento[perguntaIndex]
         .chave as keyof typeof respostasProvisionamento;
       setRespostasProvisionamento((prev) => ({ ...prev, [chave]: trimmed }));
+
       if (perguntaIndex + 1 < perguntasProvisionamento.length) {
         setPerguntaIndex(perguntaIndex + 1);
+        setInputValue(""); // limpa para a próxima pergunta
       } else {
         setEtapaAnterior("provisionamento");
         setEtapa("resultado");
@@ -89,8 +95,10 @@ export default function Home() {
       }
 
       setRespostasReparo((prev) => ({ ...prev, [chave]: trimmed }));
+
       if (perguntaIndex + 1 < perguntasReparo.length) {
         setPerguntaIndex(perguntaIndex + 1);
+        setInputValue(""); // limpa para a próxima pergunta
       } else {
         setEtapaAnterior("reparo");
         setEtapa("resultado");
@@ -115,6 +123,8 @@ export default function Home() {
       os: "",
       tecnico: localStorage.getItem("tecnico") || "",
       armario: "",
+      posicao: "",
+      designador: "",
       cliente: "",
       testes: "",
       causa: "",
@@ -122,7 +132,7 @@ export default function Home() {
       acao: "",
       validacao_nome: "",
       validacao_telefone: "",
-      proxima: "Em análise, retornarei em breve.",
+      proxima: "",
     });
   };
 
@@ -209,23 +219,25 @@ export default function Home() {
 *DESIGNADOR:* ${respostasProvisionamento.designador}
 *OSTBS:* ${respostasProvisionamento.ostbs}
 *C-VLAN:* ${respostasProvisionamento.cvlan}`
-                : `⚠ Atualização Atividades B2B ⚠
+                : `⚠️Atualização Atividades B2B ⚠️*
 
-*BD: ${respostasReparo.os}
+TÉCNICO: ${respostasReparo.tecnico}
+BD: ${respostasReparo.os}
+CLIENTE: ${respostasReparo.cliente}
+ARD: ${respostasReparo.armario || ""}
+POSIÇÃO: ${respostasReparo.posicao || ""}
+OS/TA/DESIGNADOR: ${respostasReparo.designador || ""}
 
-*TÉCNICO: ${respostasReparo.tecnico}
-*ARD: ${respostasReparo.armario || ""}
-*CLIENTE: ${respostasReparo.cliente}
-*TESTE: ${respostasReparo.testes}
-*CAUSA RAIZ: ${respostasReparo.causa}
-*ENDEREÇO: ${respostasReparo.endereco}
-*AÇÃO: ${respostasReparo.acao}
+TESTE: ${respostasReparo.testes}
+CAUSA RAIZ: ${respostasReparo.causa}
+ENDEREÇO: ${respostasReparo.endereco}
+AÇÃO: ${respostasReparo.acao}
 
-*Validação no Local:
+Validado por:
 ${respostasReparo.validacao_nome}
 ${respostasReparo.validacao_telefone}
 
-*Próxima Atualização:`}
+Próxima Atualização:`}
             </pre>
 
             <div className="flex gap-4 mt-4 flex-wrap">
@@ -239,23 +251,25 @@ ${respostasReparo.validacao_telefone}
 *DESIGNADOR:* ${respostasProvisionamento.designador}
 *OSTBS:* ${respostasProvisionamento.ostbs}
 *C-VLAN:* ${respostasProvisionamento.cvlan}`
-                      : `⚠ Atualização Atividades B2B ⚠
+                      : `⚠️Atualização Atividades B2B ⚠️*
 
-*BD: ${respostasReparo.os}
+TÉCNICO: ${respostasReparo.tecnico}
+BD: ${respostasReparo.os}
+CLIENTE: ${respostasReparo.cliente}
+ARD: ${respostasReparo.armario || ""}
+POSIÇÃO: ${respostasReparo.posicao || ""}
+OS/TA/DESIGNADOR: ${respostasReparo.designador || ""}
 
-*TÉCNICO: ${respostasReparo.tecnico}
-*ARD: ${respostasReparo.armario || ""}
-*CLIENTE: ${respostasReparo.cliente}
-*TESTE: ${respostasReparo.testes}
-*CAUSA RAIZ: ${respostasReparo.causa}
-*ENDEREÇO: ${respostasReparo.endereco}
-*AÇÃO: ${respostasReparo.acao}
+TESTE: ${respostasReparo.testes}
+CAUSA RAIZ: ${respostasReparo.causa}
+ENDEREÇO: ${respostasReparo.endereco}
+AÇÃO: ${respostasReparo.acao}
 
-*Validação no Local:
+Validado por:
 ${respostasReparo.validacao_nome}
 ${respostasReparo.validacao_telefone}
 
-*Próxima Atualização: ${respostasReparo.proxima}`;
+Próxima Atualização:`;
 
                   copiarTexto(texto);
                 }}
@@ -276,4 +290,3 @@ ${respostasReparo.validacao_telefone}
     </main>
   );
 }
-
