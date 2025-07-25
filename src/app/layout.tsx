@@ -13,8 +13,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Gere seu carimbo - Guilherme Lima",
-  description: "Crie o carimbo de forma mais rápida e fácil",
+  title: "Apoio ao técnico de dados VIVO - Guilherme Lima",
+  description: "Seja bem vindo a pagina de apoio ao técnico de dados VIVO",
+	openGraph: {
+		type: "website",
+		description:"Seja bem vindo a pagina de apoio ao técnico de dados VIVO",
+		title: "Apoio ao técnico de dados VIVO - Guilherme Lima",
+		locale: "pt-BR"
+	}
 };
 
 export default function RootLayout({

@@ -3,6 +3,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* Novas variáveis para o granulado no tema claro */
+  --granulate-color-light: rgba(158, 158, 158, 0.1); /* Cinza mais escuro com pouca opacidade */
+  --granulate-size: 5px; /* Tamanho do granulado, ajuste se quiser */
 }
 
 @theme inline {
@@ -16,6 +19,8 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    /* Novas variáveis para o granulado no tema escuro */
+    --granulate-color-dark: rgba(255, 255, 255, 0.15); /* Um cinza mais claro para contrastar no escuro */
   }
 }
 
@@ -23,4 +28,15 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+
+  /* Aplica o granulado usando as variáveis */
+  background-image: radial-gradient(var(--granulate-color-light) 1px, transparent 0);
+  background-size: var(--granulate-size) var(--granulate-size);
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    /* Ajusta o granulado para o tema escuro */
+    background-image: radial-gradient(var(--granulate-color-dark) 1px, transparent 0);
+  }
 }
