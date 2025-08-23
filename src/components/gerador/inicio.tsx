@@ -7,6 +7,12 @@ import { Footer } from "@/components/footer";
 
 export type Etapa = "inicio" | "provisionamento" | "reparo" | "resultado";
 
+interface Pergunta {
+  chave: string;
+  texto: string;
+  tipo: "text" | "textarea";
+}
+
 export default function InicioCarimbos() {
   const [etapa, setEtapa] = useState<Etapa>("inicio");
   const [perguntaIndex, setPerguntaIndex] = useState(0);
@@ -46,36 +52,53 @@ export default function InicioCarimbos() {
     }
   }, [etapa, perguntaIndex]);
 
-  const perguntasProvisionamento = [
-    { chave: "equipamento", texto: "Qual o equipamento? (ex: ONT)" },
-    { chave: "produto", texto: "Qual o serviço?" },
-    { chave: "serial", texto: "Serial GPON?" },
-    { chave: "designador", texto: "Designador?" },
-    { chave: "ostbs", texto: "OS TBS?" },
-    { chave: "cvlan", texto: "C-VLAN?" },
+  const perguntasProvisionamento: Pergunta[] = [
+    { chave: "equipamento", texto: "Qual o equipamento? (ex: ONT)", tipo: 'text' },
+    { chave: "produto", texto: "Qual o serviço?", tipo: 'text' },
+    { chave: "serial", texto: "Serial GPON?", tipo: 'text' },
+    { chave: "designador", texto: "Designador?", tipo: 'text' },
+    { chave: "ostbs", texto: "OS TBS?", tipo: 'text' },
+    { chave: "cvlan", texto: "C-VLAN?", tipo: 'text' },
   ];
 
-  const perguntasReparo = [
-    { chave: "tecnico", texto: "Nome do técnico?" },
-    { chave: "os", texto: "Nº BD?" },
-    { chave: "cliente", texto: "Nome do cliente/Empresa?" },
-    { chave: "armario", texto: "Armário / GPON? (opcional)" },
-    { chave: "posicao", texto: "Posição? (opcional)" },
-    { chave: "designador", texto: "OSTBS / TA / Designador?" },
-    { chave: "testes", texto: "Testes realizados?" },
-    { chave: "causa", texto: "Causa raiz (defeito)?" },
-    { chave: "endereco", texto: "Endereço do cliente?" },
-    { chave: "acao", texto: "Ação tomada?" },
-    { chave: "validacao_nome", texto: "Nome de quem acompanhou o serviço?" },
-    { chave: "validacao_telefone", texto: "Telefone de quem acompanhou o serviço?" },
+  const perguntasReparo: Pergunta[] = [
+    { chave: "tecnico", texto: "Nome do técnico?", tipo: 'text' },
+    { chave: "os", texto: "Nº BD?", tipo: 'text' },
+    { chave: "cliente", texto: "Nome do cliente/Empresa?", tipo: 'text' },
+    { chave: "armario", texto: "Armário / GPON? (opcional)", tipo: 'text' },
+    { chave: "posicao", texto: "Posição? (opcional)", tipo: 'text' },
+    { chave: "designador", texto: "OSTBS / TA / Designador?", tipo: 'text' },
+    { chave: "testes", texto: "Testes realizados?", tipo: 'textarea' },
+    { chave: "causa", texto: "Causa raiz (defeito)?", tipo: 'textarea' },
+    { chave: "endereco", texto: "Endereço do cliente?", tipo: 'text' },
+    { chave: "acao", texto: "Ação tomada?", tipo: 'textarea' },
+    { chave: "validacao_nome", texto: "Nome de quem acompanhou o serviço?", tipo: 'text' },
+    { chave: "validacao_telefone", texto: "Telefone de quem acompanhou o serviço?", tipo: 'text' },
   ];
+
+  const voltarPergunta = () => {
+    if (perguntaIndex > 0) {
+      setPerguntaIndex(perguntaIndex - 1);
+
+      // Recupera valor anterior
+      if (etapa === "provisionamento") {
+        const chave = perguntasProvisionamento[perguntaIndex - 1].chave as keyof typeof respostasProvisionamento;
+        setInputValue(respostasProvisionamento[chave]);
+      }
+      if (etapa === "reparo") {
+        const chave = perguntasReparo[perguntaIndex - 1].chave as keyof typeof respostasReparo;
+        setInputValue(respostasReparo[chave]);
+      }
+    }
+  };
+
 
   const perguntasAtuais =
     etapa === "provisionamento"
       ? perguntasProvisionamento
       : etapa === "reparo"
-      ? perguntasReparo
-      : [];
+        ? perguntasReparo
+        : [];
 
   const handleResposta = (valor: string) => {
     const trimmed = valor.trim();
@@ -151,10 +174,14 @@ export default function InicioCarimbos() {
             perguntaIndex < perguntasAtuais.length && (
               <Perguntas
                 pergunta={perguntasAtuais[perguntaIndex].texto}
+                tipo={perguntasAtuais[perguntaIndex].tipo || "text"}
                 inputValue={inputValue}
                 setInputValue={setInputValue}
                 handleResposta={handleResposta}
+                voltarPergunta={voltarPergunta}
+                podeVoltar={perguntaIndex > 0}
               />
+
             )}
           {etapa === "resultado" && (
             <Resultado
