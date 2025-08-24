@@ -15,7 +15,12 @@ export async function openDB(dbName: string, storeName: string) {
   });
 }
 
-export async function saveItem(dbName: string, storeName: string, id: number | string, data: any) {
+export async function saveItem<T>(
+  dbName: string,
+  storeName: string,
+  id: number | string,
+  data: T
+) {
   const db = await openDB(dbName, storeName);
   return new Promise<void>((resolve, reject) => {
     const tx = db.transaction(storeName, "readwrite");
@@ -26,13 +31,19 @@ export async function saveItem(dbName: string, storeName: string, id: number | s
   });
 }
 
-export async function loadItem<T = any>(dbName: string, storeName: string, id: number | string): Promise<T | null> {
+export async function loadItem<T>(
+  dbName: string,
+  storeName: string,
+  id: number | string
+): Promise<T | null> {
   const db = await openDB(dbName, storeName);
   return new Promise((resolve, reject) => {
     const tx = db.transaction(storeName, "readonly");
     const store = tx.objectStore(storeName);
     const request = store.get(id);
-    request.onsuccess = () => resolve(request.result?.data || null);
+    request.onsuccess = () => {
+      resolve((request.result?.data as T) ?? null);
+    };
     request.onerror = () => reject(request.error);
   });
 }
