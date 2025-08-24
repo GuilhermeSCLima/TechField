@@ -74,9 +74,10 @@ Próxima Atualização:`;
 	return (
 		<>
 			<p className="text-lg font-semibold">✅ Carimbo gerado:</p>
-			<pre className="bg-stone-800 p-4 rounded whitespace-pre-wrap text-green-400 text-sm leading-relaxed text-wrap">
+			<pre className="bg-stone-800 p-4 rounded text-green-400 text-sm leading-relaxed break-words whitespace-pre-wrap overflow-x-auto">
 				{texto}
 			</pre>
+
 			<div className="flex gap-4 mt-4 flex-wrap">
 				<button onClick={copiarTexto} className="bg-green-600 px-4 py-2 rounded">
 					Copiar carimbo
