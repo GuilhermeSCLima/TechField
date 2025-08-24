@@ -74,7 +74,7 @@ Próxima Atualização:`;
 	return (
 		<>
 			<p className="text-lg font-semibold">✅ Carimbo gerado:</p>
-			<pre className="bg-stone-800 p-4 rounded whitespace-pre-wrap text-green-400 text-sm leading-relaxed">
+			<pre className="bg-stone-800 p-4 rounded whitespace-pre-wrap text-green-400 text-sm leading-relaxed text-wrap">
 				{texto}
 			</pre>
 			<div className="flex gap-4 mt-4 flex-wrap">
