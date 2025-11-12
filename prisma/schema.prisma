@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Technician {
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  activities Activity[]
+  createdAt  DateTime @default(now())
+  materials    UsedMaterial[]
+}
+
+model Cto {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  city        String
+  region      String     // Ex: "SP" ou "I05SP231"
+  code        String      // Ex: "CTO121"
+  fullCode    String?     // Ex: "I05SP231CTO121"
+  address     String?     // Endereço físico da CTO
+  activities  Activity[]
+  createdAt   DateTime @default(now())
+
+  @@unique([region, code])
+}
+
+model Client {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  addresses   ClientAddress[]
+  createdAt   DateTime      @default(now())
+}
+
+model ClientAddress {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  client      Client        @relation(fields: [clientId], references: [id])
+  clientId    String        @db.ObjectId
+  address     String
+  city        String?
+  region      String?       // ex: SP
+  postalCode  String?
+  activities  Activity[]
+  createdAt   DateTime      @default(now())
+
+  @@index([clientId])
+}
+
+model Activity {
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  technician     Technician     @relation(fields: [technicianId], references: [id])
+  technicianId   String         @db.ObjectId
+  clientAddress  ClientAddress  @relation(fields: [clientAddressId], references: [id])
+  clientAddressId String        @db.ObjectId
+
+  bd             String
+  cto            Cto?           @relation(fields: [ctoId], references: [id])
+  ctoId          String?        @db.ObjectId
+  identifier     String?
+  rootCause      String?
+  action         String?
+  validatedBy    String?
+  validatorPhone String?
+  nextUpdate     DateTime?
+  observations   String?
+  splices        String
+  createdAt      DateTime       @default(now())
+
+  @@unique(bd)
+}
+
+
+
+model UsedMaterial {
+  id                       String          @id @default(auto()) @map("_id") @db.ObjectId
+  bd                       String          @unique // Ordem de defeito / ID
+  clientName               String
+  technicianId             String?         @db.ObjectId
+  technician               Technician?     @relation(fields: [technicianId], references: [id])
+  materials                MaterialItem[]
+  equipments               EquipmentItem[]
+  dropBatch                String?         // Lote do drop (opcional)
+  strap                    Int?         // Lote do drop (opcional)
+  fiber                    Int?         // Lote do drop (opcional)
+  internalConnector        Int?         // Lote do drop (opcional)
+  externalConnector        Int?         // Lote do drop (opcional)
+  createdAt                DateTime        @default(now())
+}
+
+type MaterialItem {
+  name      String
+  quantity  String
+}
+
+type EquipmentItem {
+  model     String
+  serial    String
+}
+
