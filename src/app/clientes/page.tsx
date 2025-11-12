@@ -1,8 +1,5 @@
 'use client'
 import { Footer } from "@/components/footer";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { saveItem, loadItem } from "@/helpers/indexedDB";
 
 export default function Home() {
   return (

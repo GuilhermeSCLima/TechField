@@ -21,12 +21,18 @@ export async function GET(
     }
 
     return NextResponse.json({ material });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error);
+
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Erro ao processar a requisição.";
+
     return new NextResponse(
       JSON.stringify({
         error: "Erro ao processar a requisição.",
-        details: error.message,
+        details: message,
       }),
       {
         status: 500,
@@ -34,4 +40,5 @@ export async function GET(
       }
     );
   }
+
 }

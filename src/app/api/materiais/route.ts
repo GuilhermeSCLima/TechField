@@ -17,11 +17,11 @@ export async function POST(req: Request) {
         bd,
         clientName,
         dropBatch,
-        materials: materials.map((m: any) => ({
+        materials: materials.map((m: { name: string; quantity: string }) => ({
           name: m.name,
           quantity: m.quantity,
         })),
-        equipments: equipments.map((e: any) => ({
+        equipments: equipments.map((e: { name: string; serial: string }) => ({
           model: e.name,
           serial: e.serial,
         })),
@@ -37,16 +37,29 @@ export async function POST(req: Request) {
 
 
     return NextResponse.json(usedMaterial);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error);
-    return new NextResponse(JSON.stringify({ error: "Erro ao processar a requisição.", details: error.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Erro ao processar a requisição.";
+
+    return new NextResponse(
+      JSON.stringify({
+        error: "Erro ao processar a requisição.",
+        details: message,
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
+
 }
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
     const materialList = await prisma.usedMaterial.findMany({
       include: { technician: true },
@@ -54,11 +67,20 @@ export async function GET(req: Request) {
     })
 
     return NextResponse.json({ materialList })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error);
-    return new NextResponse(JSON.stringify({ error: "Erro ao processar a requisição.", details: error.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Erro ao processar a requisição.";
+
+    return new NextResponse(
+      JSON.stringify({ error: "Erro ao processar a requisição.", details: message }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 }

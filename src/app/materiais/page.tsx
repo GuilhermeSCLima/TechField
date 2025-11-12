@@ -15,7 +15,7 @@ interface Item {
 
 interface Technician {
   id: string;
-  name: String;
+  name: string;
 }
 
 export default function UsedMaterialsForm() {
@@ -26,7 +26,6 @@ export default function UsedMaterialsForm() {
   const [currentQuantity, setCurrentQuantity] = useState("1x");
   const [currentSerial, setCurrentSerial] = useState("");
   const [technicians, setTechnicians] = useState<Technician[]>([])
-  const [currentTechnician, setCurrentTechnicians] = useState<Technician>()
 
   useEffect(() => {
     (async () => {
