@@ -64,6 +64,10 @@ export default function UsedMaterialsForm() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    const btn = document.querySelector("button#listSave") as HTMLButtonElement;
+
+    btn.setAttribute("disabled","true")
+
     e.preventDefault();
 
     const technicianId = (document.getElementById("technician") as HTMLSelectElement).value;
@@ -106,9 +110,11 @@ export default function UsedMaterialsForm() {
       } else {
         alert("Erro ao salvar materiais!");
       }
+      btn.removeAttribute("disabled");
     } catch (err) {
       console.error(err);
       alert("Erro ao salvar materiais!");
+      btn.removeAttribute("disabled");
     }
   };
 
@@ -250,6 +256,7 @@ export default function UsedMaterialsForm() {
           </div>
 
           <button
+            id="listSave"
             type="submit"
             className="bg-green-600 px-6 py-2 mt-4 rounded-2xl shadow-sm shadow-green-900 hover:shadow-lg"
           >
