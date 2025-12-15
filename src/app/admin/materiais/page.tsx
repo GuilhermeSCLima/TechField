@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import Fuse from "fuse.js";
 import { Footer } from "@/components/footer";
 import { AddTechnicianModal } from "@/components/AddTechnicianModal";
+import { ExportSpreadsheet } from "@/components/ExportSpreadsheet";
 
 type MaterialResponse = {
   id: string;
@@ -27,6 +28,7 @@ export default function Supervisao() {
   const [page, setPage] = useState(1);
   const [data, setData] = useState<MaterialResponse[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [showModalExport, setShowModalExport] = useState(false);
 
   const handleAddTech = async () => {
     alert("Técnico adicionado com sucesso!");
@@ -92,6 +94,12 @@ export default function Supervisao() {
                 className="bg-transparent border border-slate-400 rounded-lg px-2 py-2 text-sm cursor-pointer"
               >
                 Adicionar técnico
+              </button>
+              <button
+                onClick={() => setShowModalExport(true)}
+                className="bg-transparent border border-slate-400 rounded-lg px-2 py-2 text-sm cursor-pointer"
+              >
+                Exportar Planilha
               </button>
 
               <select
@@ -171,6 +179,7 @@ export default function Supervisao() {
       </div>
 
       {showModal && <AddTechnicianModal onClose={() => setShowModal(false)} onAdd={handleAddTech} />}
+      {showModalExport && <ExportSpreadsheet onClose={() => setShowModalExport(false)} />}
 
       <Footer />
     </main>
