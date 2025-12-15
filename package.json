@@ -9,26 +9,26 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@prisma/client": "^6.17.1",
+    "@prisma/client": "^6.19.1",
     "exceljs": "^4.4.0",
     "fuse.js": "^7.1.0",
-    "jsonwebtoken": "^9.0.2",
+    "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.526.0",
     "next": "15.4.10",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
+    "@eslint/eslintrc": "^3.3.3",
+    "@tailwindcss/postcss": "^4.1.18",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
+    "@types/node": "^20.19.27",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.2",
     "eslint-config-next": "15.4.1",
-    "prisma": "^6.17.1",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "prisma": "^6.19.1",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.9.3"
   }
 }
