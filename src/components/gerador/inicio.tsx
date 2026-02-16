@@ -10,7 +10,8 @@ export type Etapa = "inicio" | "provisionamento" | "reparo" | "resultado";
 interface Pergunta {
   chave: string;
   texto: string;
-  tipo: "text" | "textarea";
+  tipo: "text" | "textarea" | "select";
+  options?: string[];
 }
 
 export default function InicioCarimbos() {
@@ -20,7 +21,7 @@ export default function InicioCarimbos() {
   const [etapaAnterior, setEtapaAnterior] = useState<Etapa>("inicio");
 
   const [respostasProvisionamento, setRespostasProvisionamento] = useState({
-    equipamento: "",
+    equipamento: "ONT",
     produto: "",
     serial: "",
     designador: "",
@@ -33,15 +34,17 @@ export default function InicioCarimbos() {
     tecnico: "",
     armario: "",
     cliente: "",
-    posicao: "",
     designador: "",
     testes: "",
     causa: "",
     endereco: "",
+    cidade: "",
+    estado: "",
     acao: "",
+    materiais: "",
     validacao_nome: "",
     validacao_telefone: "",
-    proxima: "Em análise, retornarei em breve.",
+    proxima: "",
   });
 
   useEffect(() => {
@@ -53,27 +56,41 @@ export default function InicioCarimbos() {
   }, [etapa, perguntaIndex]);
 
   const perguntasProvisionamento: Pergunta[] = [
-    { chave: "equipamento", texto: "Qual o equipamento? (ex: ONT)", tipo: 'text' },
-    { chave: "produto", texto: "Qual o serviço?", tipo: 'text' },
-    { chave: "serial", texto: "Serial GPON?", tipo: 'text' },
-    { chave: "designador", texto: "Designador?", tipo: 'text' },
-    { chave: "ostbs", texto: "OS TBS?", tipo: 'text' },
-    { chave: "cvlan", texto: "C-VLAN?", tipo: 'text' },
+    { chave: "produto", texto: "Qual o serviço?", tipo: "text" },
+    { chave: "serial", texto: "Serial GPON?", tipo: "text" },
+    { chave: "designador", texto: "Designador?", tipo: "text" },
+    { chave: "ostbs", texto: "OS TBS?", tipo: "text" },
+    { chave: "cvlan", texto: "C-VLAN?", tipo: "text" },
   ];
 
   const perguntasReparo: Pergunta[] = [
-    { chave: "tecnico", texto: "Nome do técnico?", tipo: 'text' },
-    { chave: "os", texto: "Nº BD?", tipo: 'text' },
-    { chave: "cliente", texto: "Nome do cliente/Empresa?", tipo: 'text' },
-    { chave: "armario", texto: "Armário / GPON? (opcional)", tipo: 'text' },
-    { chave: "posicao", texto: "Posição? (opcional)", tipo: 'text' },
-    { chave: "designador", texto: "OSTBS / TA / Designador?", tipo: 'text' },
-    { chave: "testes", texto: "Testes realizados?", tipo: 'textarea' },
-    { chave: "causa", texto: "Causa raiz (defeito)?", tipo: 'textarea' },
-    { chave: "endereco", texto: "Endereço do cliente?", tipo: 'text' },
-    { chave: "acao", texto: "Ação tomada?", tipo: 'textarea' },
-    { chave: "validacao_nome", texto: "Nome de quem acompanhou o serviço?", tipo: 'text' },
-    { chave: "validacao_telefone", texto: "Telefone de quem acompanhou o serviço?", tipo: 'text' },
+    { chave: "tecnico", texto: "Nome do técnico?", tipo: "text" },
+    { chave: "os", texto: "Nº BD?", tipo: "text" },
+    { chave: "cliente", texto: "Nome do cliente/Empresa?", tipo: "text" },
+    { chave: "armario", texto: "Informação de rede", tipo: "text" },
+    { chave: "designador", texto: "OSTBS / TA / Designador?", tipo: "text" },
+    { chave: "causa", texto: "Causa raiz (defeito)?", tipo: "textarea" },
+    { chave: "endereco", texto: "Rua do cliente?", tipo: "text" },
+    { chave: "cidade", texto: "Cidade do cliente?", tipo: "text" },
+    { chave: "estado", texto: "Estado do cliente?", tipo: "text" },
+    { chave: "acao", texto: "Ação tomada?", tipo: "textarea" },
+    { chave: "materiais", texto: "Materiais utilizados?", tipo: "textarea" },
+    {
+      chave: "validacao_nome",
+      texto: "Nome de quem acompanhou o serviço?",
+      tipo: "text",
+    },
+    {
+      chave: "validacao_telefone",
+      texto: "Telefone de quem acompanhou o serviço?",
+      tipo: "text",
+    },
+    {
+      chave: "proxima",
+      texto: "Proxima atualização?",
+      tipo: "select",
+      options: ["Concluir", "Suspender", "Cancelar"],
+    },
   ];
 
   const voltarPergunta = () => {
@@ -82,16 +99,17 @@ export default function InicioCarimbos() {
 
       // Recupera valor anterior
       if (etapa === "provisionamento") {
-        const chave = perguntasProvisionamento[perguntaIndex - 1].chave as keyof typeof respostasProvisionamento;
+        const chave = perguntasProvisionamento[perguntaIndex - 1]
+          .chave as keyof typeof respostasProvisionamento;
         setInputValue(respostasProvisionamento[chave]);
       }
       if (etapa === "reparo") {
-        const chave = perguntasReparo[perguntaIndex - 1].chave as keyof typeof respostasReparo;
+        const chave = perguntasReparo[perguntaIndex - 1]
+          .chave as keyof typeof respostasReparo;
         setInputValue(respostasReparo[chave]);
       }
     }
   };
-
 
   const perguntasAtuais =
     etapa === "provisionamento"
@@ -104,7 +122,8 @@ export default function InicioCarimbos() {
     const trimmed = valor.trim();
 
     if (etapa === "provisionamento") {
-      const chave = perguntasProvisionamento[perguntaIndex].chave as keyof typeof respostasProvisionamento;
+      const chave = perguntasProvisionamento[perguntaIndex]
+        .chave as keyof typeof respostasProvisionamento;
       setRespostasProvisionamento((prev) => ({ ...prev, [chave]: trimmed }));
 
       if (perguntaIndex + 1 < perguntasProvisionamento.length) {
@@ -117,7 +136,8 @@ export default function InicioCarimbos() {
     }
 
     if (etapa === "reparo") {
-      const chave = perguntasReparo[perguntaIndex].chave as keyof typeof respostasReparo;
+      const chave = perguntasReparo[perguntaIndex]
+        .chave as keyof typeof respostasReparo;
 
       if (chave === "tecnico" && trimmed) {
         localStorage.setItem("tecnico", trimmed);
@@ -152,13 +172,15 @@ export default function InicioCarimbos() {
       os: "",
       tecnico: localStorage.getItem("tecnico") || "",
       armario: "",
-      posicao: "",
-      designador: "",
       cliente: "",
+      designador: "",
       testes: "",
       causa: "",
       endereco: "",
+      cidade: "",
+      estado: "",
       acao: "",
+      materiais: "",
       validacao_nome: "",
       validacao_telefone: "",
       proxima: "",
@@ -174,14 +196,14 @@ export default function InicioCarimbos() {
             perguntaIndex < perguntasAtuais.length && (
               <Perguntas
                 pergunta={perguntasAtuais[perguntaIndex].texto}
-                tipo={perguntasAtuais[perguntaIndex].tipo || "text"}
+                tipo={perguntasAtuais[perguntaIndex].tipo}
+                options={perguntasAtuais[perguntaIndex].options}
                 inputValue={inputValue}
                 setInputValue={setInputValue}
                 handleResposta={handleResposta}
                 voltarPergunta={voltarPergunta}
                 podeVoltar={perguntaIndex > 0}
               />
-
             )}
           {etapa === "resultado" && (
             <Resultado

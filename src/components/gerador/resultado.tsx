@@ -12,18 +12,21 @@ interface ResultadoProps {
 		cvlan: string
 	},
 	respostasReparo: {
-		tecnico: string;
-		os: string;
-		cliente: string;
-		armario: string;
-		posicao: string;
-		designador: string;
-		testes: string;
-		causa: string;
-		endereco: string;
-		acao: string;
-		validacao_nome: string;
-		validacao_telefone: string;
+		os: string,
+		tecnico: string,
+		armario: string,
+		cliente: string,
+		designador: string,
+		testes: string,
+		causa: string,
+		endereco: string,
+		cidade: string,
+		estado: string,
+		acao: string,
+		materiais: string,
+		validacao_nome: string,
+		validacao_telefone: string,
+		proxima: string,
 	},
 	resetar: () => void
 }
@@ -44,24 +47,32 @@ export default function Resultado({
 *C-VLAN:* ${respostasProvisionamento?.cvlan}`
 			: `⚠️Atualização Atividades B2B ⚠️*
 
-TÉCNICO: ${respostasReparo.tecnico}
-BD: ${respostasReparo.os}
-CLIENTE: ${respostasReparo.cliente}
-ARD: ${respostasReparo.armario || ""}
-POSIÇÃO: ${respostasReparo.posicao || ""}
-OS/TA/DESIGNADOR: ${respostasReparo.designador || ""}
+Técnico: ${respostasReparo.tecnico}
+OS: ${respostasReparo.os}
 
-TESTE: ${respostasReparo.testes}
-CAUSA RAIZ: ${respostasReparo.causa}
-ENDEREÇO: ${respostasReparo.endereco}
-AÇÃO: ${respostasReparo.acao}
-
+Cliente: ${respostasReparo.cliente}
+Endereço: ${respostasReparo.endereco}
+Cidade: ${respostasReparo.cidade}
+Estado: ${respostasReparo.estado}
 Validado por:
 ${respostasReparo.validacao_nome}
 ${respostasReparo.validacao_telefone}
 
-Próxima Atualização:`;
+Dados de rede: ${respostasReparo.armario || ""}
+OS/TA/DESIGNADOR: ${respostasReparo.designador || ""}
 
+CAUSA RAIZ: 
+${respostasReparo.causa}
+
+AÇÃO: 
+${respostasReparo.acao}
+
+Materiais Utilizados: 
+${respostasReparo.materiais}
+
+Próxima Atualização:
+${respostasReparo.proxima}
+`;
 	const copiarTexto = async () => {
 		try {
 			await navigator.clipboard.writeText(texto);

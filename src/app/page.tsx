@@ -1,12 +1,12 @@
 import { Footer } from "@/components/footer";
 import Link from "next/link";
 
-const facilidades = [
+const facilidades: { id: number; titulo: string; descricao: string; url: string; inactive?: boolean }[] = [
 	{ id: 1, titulo: "Carimbos", descricao: "Criação e personalização de carimbos", url: "/carimbos" },
 	{ id: 2, titulo: "Caderno de testes", descricao: "Organização dos testes realizados", url: "/caderno-testes" },
-	{ id: 3, titulo: "Detalhe dos serviços", descricao: "Detalhamento completo dos serviços prestados e materiais de apoio", url: "/servicos" },
-	{ id: 4, titulo: "Materiais utilizados", descricao: "Defina os materiais utilizados durante a atividade", url: "/materiais" },
-	{ id: 5, titulo: "Clientes conhecidos", descricao: "Busque por clientes conhecidos", url: "/clientes", inactive: true },
+	// { id: 3, titulo: "Detalhe dos serviços", descricao: "Detalhamento completo dos serviços prestados e materiais de apoio", url: "/servicos" },
+	// { id: 4, titulo: "Materiais utilizados", descricao: "Defina os materiais utilizados durante a atividade", url: "/materiais" },
+	// { id: 5, titulo: "Clientes conhecidos", descricao: "Busque por clientes conhecidos", url: "/clientes", inactive: true },
 ];
 
 export default function Home() {
