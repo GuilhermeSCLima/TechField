@@ -5,7 +5,7 @@
   --foreground: #171717;
   /* Novas variáveis para o granulado no tema claro */
   --granulate-color-light: rgba(158, 158, 158, 0.1); /* Cinza mais escuro com pouca opacidade */
-  --granulate-size: 100px; /* Tamanho do granulado, ajuste se quiser */
+  --granulate-size: 15px; /* Tamanho do granulado, ajuste se quiser */
 }
 
 @theme inline {
