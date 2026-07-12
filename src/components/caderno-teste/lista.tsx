@@ -1,34 +1,80 @@
+import { Check, Clipboard, X } from "lucide-react";
+import { useNotify } from '@/hooks/useNotify';
+
+type Status = "pendente" | "sucesso" | "falha";
+
+interface Props {
+  numeros: { text: string; num: string }[];
+  status: Record<number, Status>;
+  onSuccess: (index: number) => void;
+  onFail: (index: number) => void;
+}
+
 export default function CadernoTesteLista({
   numeros,
-  checados,
-  toggleCheck,
-}: {
-  numeros: string[];
-  checados: number[];
-  toggleCheck: (index: number) => void;
-}) {
+  status,
+  onSuccess,
+  onFail,
+}: Props) {
+  const { notify } = useNotify();
+  const copiarNumero = (numero: string) => {
+    navigator.clipboard.writeText(numero.replace(" ", ""));
+    notify(
+      "Copiado",
+      "O número foi copiado para a área de transferência",
+      "info"
+    );
+  };
+
   return (
-    <div className="mt-2 text-sm text-stone-300 flex flex-col gap-2">
-      {numeros.map((num, i) => (
-        <label
-          key={i}
-          className={`flex items-center gap-2 p-2 rounded cursor-pointer transition ${
-            checados.includes(i)
-              ? "bg-green-700/40"
-              : "hover:bg-stone-700/50"
-          }`}
-        >
-          <input
-            type="checkbox"
-            checked={checados.includes(i)}
-            onChange={() => toggleCheck(i)}
-            className="accent-green-500"
-          />
-          <span className={checados.includes(i) ? "line-through opacity-70" : ""}>
-            {num}
-          </span>
-        </label>
-      ))}
+    <div className="space-y-3">
+      {numeros.map((numero, index) => {
+        const current = status[index];
+
+        return (
+          <div
+            key={index}
+            className={`
+              flex items-center justify-between
+              rounded-xl p-3 transition-colors
+              ${
+                current === "sucesso"
+                  ? "bg-green-900"
+                  : current === "falha"
+                  ? "bg-red-900"
+                  : "bg-background"
+              }
+            `}
+          >
+            <span className="font-medium">
+              {numero.text}
+            </span>
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => copiarNumero(numero.num)}
+                className="p-2 rounded-lg hover:bg-black/20"
+              >
+                <Clipboard size={18} />
+              </button>
+
+              <button
+                onClick={() => onSuccess(index)}
+                className="p-2 rounded-lg hover:bg-black/20"
+              >
+                <Check size={18} />
+              </button>
+
+              <button
+                onClick={() => onFail(index)}
+                className="p-2 rounded-lg hover:bg-black/20"
+              >
+                <X size={18} />
+              </button>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

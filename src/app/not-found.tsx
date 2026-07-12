@@ -1,31 +1,138 @@
 "use client";
-
-import { Footer } from "@/components/footer";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 export default function NotFound() {
-	const pathname = usePathname();
-	const aba = pathname.split("/");
-	return (
-		<main className="min-h-screen text-white flex flex-col items-center justify-between p-6">
-			<div className="flex flex-col items-center justify-center flex-1">
-				<div className="bg-[#1a1a1a] rounded-xl p-6 sm:w-96 shadow-lg">
-					{aba[1] == "servicos" ? (<>
+  return (
+    <main className="min-h-screen flex items-center justify-center bg-background-primary p-6">
+      <div className="max-w-3xl w-full rounded-3xl bg-background-secondary border border-white/10 p-12">
+        <div className="flex flex-col items-center text-center gap-8">
 
-						<h2 className="text-lg font-bold mb-4 text-center">⚠️SERVIÇO/MATERIAL EM FALTA⚠️</h2>
-						<p className="self-center text-justify">Ops, acho que você chegou muito cedo! Ainda estou preparando este material de apoio, qualquer dúvida entre em contato comigo via Whatsapp ou email.</p>
-						<div className="flex flex-col gap-3 mt-5">
-							<Link className="self-center px-3 py-1 rounded-md bg-stone-600 text-white hover:bg-stone-500 transition-colors duration-200" href={"https://wa.me/5541991474592"}>Whatsapp</Link>
-							<Link className="self-center px-3 py-1 rounded-md bg-stone-600 text-white hover:bg-stone-500 transition-colors duration-200" href={"mailto:contato@guilhermelima.dev"}>E-mail</Link>
-						</div>
-					</>) : (<>
-						<h2 className="text-lg font-bold mb-4 text-center">⛔PAGINA NÃO ENCONTRADA⛔</h2>
-						<p className="self-center text-justify">Ops, acho que você se enganou, essa pagina que você tentou acessar não existe ou não está mais disponivel!</p>
-					</>)}
-				</div>
-			</div>
-			<Footer />
-		</main>
-	)
+          {/* Ilustração */}
+          <svg
+            width="500"
+            height="180"
+            viewBox="0 0 500 180"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="max-w-full"
+          >
+            {/* ONT */}
+            <rect
+              x="20"
+              y="55"
+              width="120"
+              height="70"
+              rx="12"
+              fill="currentColor"
+              className="text-zinc-800"
+            />
+
+            {/* <text
+              x="80"
+              y="85"
+              textAnchor="middle"
+              fill="#fff"
+              fontSize="14"
+              fontWeight="600"
+            >
+              ONT
+            </text> */}
+
+            {/* LEDs */}
+            <circle cx="50" cy="105" r="4" fill="#22c55e" />
+            <circle cx="70" cy="105" r="4" fill="#22c55e" />
+            <circle cx="90" cy="105" r="4" fill="#22c55e" />
+            <circle cx="110" cy="105" r="4" fill="#22c55e" />
+
+            {/* Cabo interrompido */}
+            <line
+              x1="140"
+              y1="90"
+              x2="220"
+              y2="90"
+              stroke="#60a5fa"
+              strokeWidth="4"
+              strokeDasharray="12 8"
+            />
+
+            {/* X */}
+            <line
+              x1="240"
+              y1="75"
+              x2="270"
+              y2="105"
+              stroke="#ef4444"
+              strokeWidth="5"
+              strokeLinecap="round"
+            />
+            <line
+              x1="270"
+              y1="75"
+              x2="240"
+              y2="105"
+              stroke="#ef4444"
+              strokeWidth="5"
+              strokeLinecap="round"
+            />
+
+            <line
+              x1="290"
+              y1="90"
+              x2="370"
+              y2="90"
+              stroke="#60a5fa"
+              strokeWidth="4"
+              strokeDasharray="12 8"
+            />
+
+            {/* Nuvem */}
+            <path
+              d="M415 120H455C472 120 485 108 485 92C485 77 474 65 458 64C454 49 442 40 427 40C410 40 396 51 393 67C379 69 368 80 368 94C368 108 379 120 395 120H415Z"
+              fill="#3f3f46"
+            />
+
+            <text
+              x="427"
+              y="95"
+              textAnchor="middle"
+              fill="#fff"
+              fontSize="26"
+              fontWeight="700"
+            >
+              404
+            </text>
+          </svg>
+
+          {/* Conteúdo */}
+          <div className="space-y-4">
+            <h1 className="text-5xl font-bold">
+              Conexão não encontrada
+            </h1>
+
+            <p className="text-zinc-400 max-w-xl">
+              O recurso que você tentou acessar não respondeu ao teste de
+              conectividade. Verifique o endereço e tente novamente.
+            </p>
+          </div>
+
+          {/* Botões */}
+          <div className="flex gap-4">
+            <button
+              onClick={() => window.history.back()}
+              className="px-5 py-2 rounded-xl border border-white/10 hover:bg-white/5 transition"
+            >
+              Voltar
+            </button>
+
+            <a
+              href="/"
+              className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 transition"
+            >
+              Inicio
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
 }

@@ -1,63 +1,103 @@
 "use client";
-import { useState, useEffect } from "react";
-import { Footer } from "@/components/footer";
+
+import { useEffect, useState } from "react";
+
 import CadernoTesteHeader from "./header";
 import CadernoTesteLista from "./lista";
+import CadernoTesteSummary from "./summary";
+
 import { numeros } from "./dados";
-import { loadItem, saveItem, clearStore } from "@/helpers/indexedDB";
+
+import {
+  clearStore,
+  loadItem,
+  saveItem,
+} from "@/helpers/indexedDB";
+
+type Status = "pendente" | "sucesso" | "falha";
 
 const DB_NAME = "CadernoTesteDB";
-const STORE_NAME = "checados";
+const STORE_NAME = "status";
 const ITEM_ID = 1;
 
 export default function CadernoTesteContainer() {
-  const [checados, setChecados] = useState<number[]>([]);
+  const [status, setStatus] = useState<
+    Record<number, Status>
+  >({});
 
-  // Carregar os checkboxes salvos ao iniciar
   useEffect(() => {
-    loadItem<number[]>(DB_NAME, STORE_NAME, ITEM_ID).then((data) => {
-      if (data) setChecados(data);
+    loadItem<Record<number, Status>>(
+      DB_NAME,
+      STORE_NAME,
+      ITEM_ID
+    ).then((data) => {
+      if (data) setStatus(data);
     });
   }, []);
 
-  const toggleCheck = (index: number) => {
-    const newChecados = checados.includes(index)
-      ? checados.filter((i) => i !== index)
-      : [...checados, index];
-    setChecados(newChecados);
-    saveItem(DB_NAME, STORE_NAME, ITEM_ID, newChecados);
+  const salvar = (
+    novoStatus: Record<number, Status>
+  ) => {
+    setStatus(novoStatus);
+    saveItem(
+      DB_NAME,
+      STORE_NAME,
+      ITEM_ID,
+      novoStatus
+    );
+  };
+
+  const marcarSucesso = (index: number) => {
+    salvar({
+      ...status,
+      [index]: "sucesso",
+    });
+  };
+
+  const marcarFalha = (index: number) => {
+    salvar({
+      ...status,
+      [index]: "falha",
+    });
   };
 
   const resetar = async () => {
-    setChecados([]);
+    setStatus({});
     await clearStore(DB_NAME, STORE_NAME);
   };
 
+  const sucesso = Object.values(status).filter(
+    (s) => s === "sucesso"
+  ).length;
+
+  const falha = Object.values(status).filter(
+    (s) => s === "falha"
+  ).length;
+
   return (
-    <main className="min-h-screen text-white flex flex-col items-center justify-between p-6">
-      <div className="flex flex-col items-center justify-center flex-1 w-full max-w-lg">
-        <div className="bg-[#1a1a1a] rounded-xl p-6 w-full shadow-lg">
-          <CadernoTesteHeader total={numeros.length} concluidos={checados.length} />
-          <CadernoTesteLista numeros={numeros} checados={checados} toggleCheck={toggleCheck} />
+    <div className="h-full flex flex-col">
+      <CadernoTesteHeader
+        total={numeros.length}
+        sucesso={sucesso}
+      />
 
-          <div
-            className="w-full mt-3 rounded-lg shadow-md text-white text-center"
-            style={{
-              backgroundColor: `hsl(${(checados.length / numeros.length) * 120}, 70%, 40%)`,
-            }}
-          >
-            {checados.length} / {numeros.length}
-          </div>
-
-          <button
-            onClick={resetar}
-            className="mt-4 w-full bg-amber-400 text-white py-2 rounded shadow-md hover:bg-amber-600 transition"
-          >
-            Resetar checkboxes
-          </button>
+      <div className="flex-1 grid grid-cols-[1fr_280px] gap-6 overflow-hidden">
+        <div className="overflow-y-auto pr-2">
+          <CadernoTesteLista
+            numeros={numeros}
+            status={status}
+            onSuccess={marcarSucesso}
+            onFail={marcarFalha}
+          />
         </div>
+
+        <CadernoTesteSummary
+          total={numeros.length}
+          sucesso={sucesso}
+          falha={falha}
+          resetar={resetar}
+        />
       </div>
-      <Footer />
-    </main>
+    </div>
   );
 }

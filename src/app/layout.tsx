@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Roboto, Geist } from "next/font/google";
 import "./globals.css";
 import ServiceWorkerProvider from "@/components/ServiceWorkerProvider";
+import { NotifyProvider } from "@/components/notify/NotifyProvider";
+import { cn } from "@/lib/utils";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const roboto = Roboto({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
+  variable: "--font-roboto",
 });
 
 export const metadata: Metadata = {
@@ -30,15 +30,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" className={`dark ${cn("font-sans", geist.variable)}`}>
       <head>
         <meta name="theme-color" content="#0f172a" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${roboto.variable} antialiased`}
       >
-        {children}
+        <NotifyProvider>
+          {children}
+        </NotifyProvider>
         <ServiceWorkerProvider />
       </body>
     </html>

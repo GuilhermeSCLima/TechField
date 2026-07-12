@@ -1,7 +1,11 @@
 // indexedDB.ts
+const DB_VERSION = 1;
 export async function openDB(dbName: string, storeName: string) {
   return new Promise<IDBDatabase>((resolve, reject) => {
-    const request = indexedDB.open(dbName, 1);
+    const request = indexedDB.open(
+      dbName,
+      DB_VERSION
+    );
 
     request.onupgradeneeded = () => {
       const db = request.result;
@@ -22,6 +26,8 @@ export async function saveItem<T>(
   data: T
 ) {
   const db = await openDB(dbName, storeName);
+  console.log(db.objectStoreNames);
+  console.log(storeName);
   return new Promise<void>((resolve, reject) => {
     const tx = db.transaction(storeName, "readwrite");
     const store = tx.objectStore(storeName);
