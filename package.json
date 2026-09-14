@@ -11,9 +11,6 @@
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "exceljs": "^4.4.0",
-    "fuse.js": "^7.1.0",
-    "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.526.0",
     "next": "15.4.10",
     "radix-ui": "^1.6.0",
@@ -26,7 +23,6 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
     "@tailwindcss/postcss": "^4.1.18",
-    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20.19.27",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
